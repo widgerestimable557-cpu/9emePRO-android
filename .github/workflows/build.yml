@@ -41,8 +41,13 @@ jobs:
       - name: Decode keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > app/keystore.jks
+          # Fail fast with a clear message if the secret was corrupted/truncated,
+          # instead of letting a broken .jks reach the Gradle signing step.
+          keytool -list -keystore app/keystore.jks -storepass "$KEYSTORE_PASSWORD" > /dev/null \
+            || (echo "::error::Decoded keystore is invalid - the KEYSTORE_BASE64 secret is likely corrupted. See fix instructions." && exit 1)
 
       # 6. Build APK release signe
       - name: Build Release APK
