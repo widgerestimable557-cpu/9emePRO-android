@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">9emePRO</string>
+    <string name="reminder_title">N\'oublie pas ton quiz !</string>
+    <string name="reminder_text">Un petit quiz aujourd\'hui pour progresser sur 9emePRO.</string>
 </resources>

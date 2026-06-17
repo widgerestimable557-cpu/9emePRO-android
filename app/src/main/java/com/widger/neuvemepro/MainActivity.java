@@ -3,9 +3,11 @@ package com.widger.neuvemepro;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -21,9 +23,7 @@ import android.content.Context;
 
 public class MainActivity extends Activity {
 
-    // ── REMPLACE CETTE URL PAR TON URL GAS APRES DEPLOIEMENT ──────────
     private static final String GAS_URL = "https://script.google.com/macros/s/AKfycbwTnQK4MHIulnKL7V_9t-5vqAgsPz8VNM_SqgCt6zUYgjKlT8fpS-nBQvaHpOjY063X/exec";
-    // ──────────────────────────────────────────────────────────────────
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -49,6 +49,17 @@ public class MainActivity extends Activity {
         });
 
         setupWebView();
+
+        // --- Rappel quotidien (notification locale, sans serveur) ---
+        ReminderScheduler.createNotificationChannel(this);
+        ReminderScheduler.scheduleDaily(this);
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100);
+            }
+        }
+        // --------------------------------------------------------------
 
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
@@ -90,11 +101,9 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-                // Laisser GAS et Google s'ouvrir dans la WebView
                 if (url.contains("script.google.com") || url.contains("accounts.google.com")) {
                     return false;
                 }
-                // Les autres liens s'ouvrent dans le navigateur externe
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
                 return true;
