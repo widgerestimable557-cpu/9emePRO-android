@@ -22,7 +22,7 @@ import android.content.Context;
 public class MainActivity extends Activity {
 
     // ── REMPLACE CETTE URL PAR TON URL GAS APRES DEPLOIEMENT ──────────
-    private static final String GAS_URL = "https://script.google.com/macros/s/TON_DEPLOYMENT_ID/exec";
+    private static final String GAS_URL = "https://script.google.com/macros/s/AKfycbwTnQK4MHIulnKL7V_9t-5vqAgsPz8VNM_SqgCt6zUYgjKlT8fpS-nBQvaHpOjY063X/exec";
     // ──────────────────────────────────────────────────────────────────
 
     private WebView webView;
